@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <title>Main</title>
+</head>
+
+<body>
+    <button id="trainModel">Train Model</button>
+    <div class="term" id="trainFeedDiv">
+        <h1>Open Positions</h1>
+        <table class="positions-table">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Entry Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for position in positions %}
+                <tr>
+                    <td>{{ position.symbol }}</td>
+                    <td class="currency">${{ position.entry_price|floatformat:2 }}</td>
+                    <td class="currency">{{ position.quantity }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="empty-state">No open positions found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <br/>
+    <br/>
+    <div class="asset-container term" id="trainFeedDiv">
+        <h1>The assets</h1>
+        <table class="asset-table">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Available</th>
+                    <th>Locked</th>
+                    <th>Total Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asset in assets %}
+                <tr>
+                    <td>
+                        <div class="asset-symbol">
+                            <span class="status-indicator {% if asset.locked > 0 %}locked-status{% else %}active-status{% endif %}"></span>
+                            {{ asset.symbol }}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="currency-value">{{ asset.free|floatformat:4 }}</span>
+                        <span class="currency-symbol">{{ asset.symbol }}</span>
+                    </td>
+                    <td>
+                        <span class="currency-value">{{ asset.locked|floatformat:4 }}</span>
+                        <span class="currency-symbol">{{ asset.symbol }}</span>
+                    </td>
+                    <td>
+                        <span class="currency-value">{{ asset.total|floatformat:4 }}</span>
+                        <span class="currency-symbol">{{ asset.symbol }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-state">No assets available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+    <div class="term" id="tradeFeedDiv">
+
+    </div>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

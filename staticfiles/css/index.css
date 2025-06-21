@@ -1,0 +1,228 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.term{
+    width: 60%;
+    margin: auto;
+    background-color: rgb(35, 42, 48);
+    color: greenyellow;
+    min-height: 60px;
+    min-height: 20px;
+}
+.formContainer{
+    width: 60%;
+    margin: auto;
+    margin-top: 60px;
+    justify-content: center;
+    border-radius: 40px;
+    align-items: center;
+    padding: 15px;
+    box-shadow: 6px 6px 0 0 rgba(0,0,0,0.5);
+}
+.formContainer form input[type='text'],
+                    input[type='password']{
+    padding: 6px;
+    width: 90%;
+    border-radius: 6px;
+  
+}
+.formContainer form input[type='submit']{
+    padding: 6px;
+    width: 30%;
+    border-radius: 6px;
+    margin: auto;
+  
+}
+
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+/* Table styling */
+.positions-table {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.positions-table th,
+.positions-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.positions-table th {
+    background-color: #3498db;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.positions-table tr:last-child td {
+    border-bottom: none;
+}
+
+.positions-table tr:hover {
+    background-color: #f6f9fc;
+}
+
+/* Numeric columns */
+.positions-table td:nth-child(2),
+.positions-table td:nth-child(3) {
+    text-align: right;
+    font-family: monospace;
+}
+
+/* Empty state styling */
+.empty-state {
+    padding: 1.5rem;
+    text-align: center;
+    color: #7f8c8d;
+}
+
+/* Currency formatting */
+.currency {
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+    /* Base Styles */
+    .asset-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .asset-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Header Styles */
+    .asset-table thead {
+        background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+        color: white;
+    }
+
+    .asset-table th {
+        padding: 1.25rem 1.5rem;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    /* Body Styles */
+    .asset-table td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    /* Numeric Cells */
+    .asset-table td:nth-child(n+2) {
+        text-align: right;
+        font-family: 'Space Mono', monospace;
+    }
+
+    /* Hover Effects */
+    .asset-table tbody tr:hover {
+        background-color: #f8fafc;
+        transition: background-color 0.2s ease;
+    }
+
+    /* Asset Symbols */
+    .asset-symbol {
+        font-weight: 600;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    /* Status Indicators */
+    .status-indicator {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .active-status { background: #10b981; }
+    .locked-status { background: #f59e0b; }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .asset-table {
+            font-size: 14px;
+        }
+        
+        .asset-table th,
+        .asset-table td {
+            padding: 0.75rem 1rem;
+        }
+
+        .asset-container {
+            padding: 0 0.5rem;
+        }
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 2rem;
+        text-align: center;
+        color: #64748b;
+        font-style: italic;
+    }
+
+    /* Value Formatting */
+    .currency-value {
+        color: #334155;
+        font-weight: 500;
+    }
+    
+    .currency-symbol {
+        color: #64748b;
+        margin-left: 0.25rem;
+        font-size: 0.9em;
+    }
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .positions-table {
+        font-size: 14px;
+    }
+    
+    .positions-table th,
+    .positions-table td {
+        padding: 0.75rem 1rem;
+    }
+}
+
+
+@media (max-widht:600px) {
+    .term{
+        width: 90%;
+        margin: auto;
+        background-color: rgb(35, 42, 48);
+        color: greenyellow;
+        min-height: 20px;
+    }
+    
+}

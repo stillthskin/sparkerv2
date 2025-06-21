@@ -1,0 +1,52 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Django
+*.db
+*.sqlite3
+db.sqlite3
+media/
+static/
+
+# Virtual Environment
+sparker/
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Environment files
+.env
+.env.*
+
+# Local settings (do not push to version control)
+local_settings.py
+
+# Docker
+*.dockerignore
+Dockerfile
+docker-compose.yml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDEs and text editors
+*.sublime-workspace
+*.sublime-project
+*.vscode/
+
+*.joblib
