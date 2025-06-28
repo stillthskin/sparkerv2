@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-cdwppd-sytjp49%w67&ru-c93*o0w^1r^op$r0^0x4)&skbnwa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['152.42.170.93','127.0.0.1']
+ALLOWED_HOSTS = ['152.42.170.93','127.0.0.1','trade.denniskenda.com','www.trade.denniskenda.com']
 
 LOGIN_URL = '/login/'
 
