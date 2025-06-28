@@ -69,6 +69,6 @@ def home(request):
         'cache_status': cache_status
     }
     
-    return render(request, 'index2.html', context=contec)
+    return render(request, 'index.html', context=contec)
 
 
