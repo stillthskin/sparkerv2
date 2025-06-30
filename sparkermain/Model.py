@@ -42,7 +42,7 @@ class Model:
                 kline = data['k']
                 if kline['x']:  
                     self.count += 1
-                    close_price = float(kline['c'])
+                    close_price = float(kline['c']) 
                     self.closes.append(close_price)
                     print(f"Close price: {close_price}")
                     
@@ -64,7 +64,7 @@ class Model:
                 quantity=self.trade_quantity
             )
                          current_assets= theclient.get_assets()
-                         cache.set('current_assets', current_assets, timeout=300)
+                         cache.set('current_assets', current_assets, timeout=None)
 
 
                     # # Maintain only last 60 closes
@@ -108,7 +108,7 @@ class Model:
 
                         try:
                             model=NModelII('BTCUSDT')
-                            model.load_or_train_model(model_path='model.h5', scaler_path='scaler.pkl')
+                            model.load_or_train_model(model_path='model.keras', scaler_path='scaler_close.pkl')
                             print(f' SOme prdiction: {model.predict_next(self.df)}')
                             self.predicted_prices= model.predict_next(self.df)
 
@@ -133,8 +133,8 @@ class Model:
                         ma_confirmation_great = np.mean(self.predicted_prices[:3]) > close_price
                         ma_confirmation_less = np.mean(self.predicted_prices[:3]) < close_price
 
-                        should_buy = consecutive_bullish and ma_confirmation_great and rsi < 40
-                        should_sell = consecutive_bearish and ma_confirmation_less and rsi > 60
+                        should_buy = consecutive_bullish and ma_confirmation_great and rsi < 35
+                        should_sell = consecutive_bearish and ma_confirmation_less and rsi > 65
                         print(f"Should buy: {should_buy}, Should sell: {should_sell} RSI: {rsi} consecutive_bullish: {consecutive_bullish} consecutive_bearish: {consecutive_bearish} ma_confirmation_great: {ma_confirmation_great} ma_confirmation_less: {ma_confirmation_less}")
 
                         # Execute trades
@@ -161,7 +161,7 @@ class Model:
             )
             res = theclient.order()
             current_assets= theclient.get_assets()
-            cache.set('current_assets', current_assets, timeout=300)
+            cache.set('current_assets', current_assets, timeout=None)
             
             if res:
                 if side == SIDE_BUY:
@@ -176,7 +176,7 @@ class Model:
                         del self.open_positions[self.symbol]
                 
                 self.assets = theclient.get_assets()
-                cache.set('current_assets', self.assets, timeout=300)
+                cache.set('current_assets', self.assets, timeout=None)
                 cache.set('open_positions', self.open_positions, timeout=None)
 
         except Exception as e:
@@ -208,7 +208,7 @@ class Model:
                 cache.set('open_positions', self.open_positions, timeout=None)
                 print(f"Closed position ({reason}) at {current_price}")
                 self.assets = theclient.get_assets()
-                cache.set('current_assets', self.assets, timeout=300)
+                cache.set('current_assets', self.assets, timeout=None)
         except Exception as e:
             print(f"Position close failed: {e}")
 
