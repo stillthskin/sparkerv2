@@ -54,6 +54,19 @@ class Model:
                         model.train_model()
                         self.count=0
 
+
+                    if self.count % 20 == 0:
+                         print(f'count: {self.count} - Fetching current assets')
+                         theclient = Cliente(
+                symbol=self.symbol,
+                tradeside=None,
+                order_type=ORDER_TYPE_MARKET,
+                quantity=self.trade_quantity
+            )
+                         current_assets= theclient.get_assets()
+                         cache.set('current_assets', current_assets, timeout=300)
+
+
                     # # Maintain only last 60 closes
                     # if len(self.closes) > 60:
                     # if len(self.df)>=30:
