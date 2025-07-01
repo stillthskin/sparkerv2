@@ -133,8 +133,8 @@ class Model:
                         ma_confirmation_great = np.mean(self.predicted_prices[:3]) > close_price
                         ma_confirmation_less = np.mean(self.predicted_prices[:3]) < close_price
 
-                        should_buy = consecutive_bullish and ma_confirmation_great and rsi < 35
-                        should_sell = consecutive_bearish and ma_confirmation_less and rsi > 65
+                        should_buy = consecutive_bullish  and rsi < 30
+                        should_sell = consecutive_bearish  and rsi > 70
                         print(f"Should buy: {should_buy}, Should sell: {should_sell} RSI: {rsi} consecutive_bullish: {consecutive_bullish} consecutive_bearish: {consecutive_bearish} ma_confirmation_great: {ma_confirmation_great} ma_confirmation_less: {ma_confirmation_less}")
 
                         # Execute trades
