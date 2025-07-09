@@ -10,14 +10,14 @@ class SocketProce:
         self.symbol = symbol
         self.interval = interval
 
-        # Load historical klines (just once)
+        # Load historical klines (only once)
         klines = self.client.get_historical_klines(
             self.symbol,
             self.interval,
             f"{self.max_length + 10} {self.interval} ago UTC"
         )
 
-        # Create DataFrame from historical data
+        # Create historical DataFrame
         self.df_hist = pd.DataFrame(
             klines,
             columns=["timestamp", "Open", "High", "Low", "Close", "volume",
@@ -29,17 +29,15 @@ class SocketProce:
         numeric_cols = ["Open", "High", "Low", "Close", "volume", "quote_asset_volume",
                         "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume"]
         self.df_hist[numeric_cols] = self.df_hist[numeric_cols].astype(float)
-        print(f"Historical DataFrame shape: {self.df_hist.shape}")
 
-        # Trim to latest `max_length`
+        # Keep last `max_length` rows
         self.df_hist = self.df_hist.tail(self.max_length).reset_index(drop=True)
-        print
 
-        # Streamed (live) data goes here
+        # Initialize empty stream DataFrame
         self.df_stream = pd.DataFrame(columns=self.df_hist.columns)
 
     def processDf(self, kline):
-        # Parse incoming kline
+        # Parse incoming kline into dictionary
         processed = {
             'timestamp': kline['t'],
             'Open': float(kline['o']),
@@ -55,16 +53,21 @@ class SocketProce:
             'ignore': kline['B']
         }
 
+        # Wrap into single-row DataFrame
         new_row = pd.DataFrame([processed])
+        new_row = new_row.reindex(columns=self.df_stream.columns)  # Avoid FutureWarning
 
-        # Add to live stream DataFrame
+        # Append to stream
         self.df_stream = pd.concat([self.df_stream, new_row], ignore_index=True)
 
-        # Maintain size
+        # Keep only last `max_length` rows
         if len(self.df_stream) > self.max_length:
             self.df_stream = self.df_stream.iloc[1:]
 
-        # Return historical until live stream fills up
+        # Debug: log length
+        print(f"DataFrame length: {len(self.df_stream)}")
+
+        # Return historical until stream is full
         if len(self.df_stream) < self.max_length:
             return self.df_hist
         else:
