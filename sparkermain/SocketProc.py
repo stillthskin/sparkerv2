@@ -29,10 +29,11 @@ class SocketProce:
         numeric_cols = ["Open", "High", "Low", "Close", "volume", "quote_asset_volume",
                         "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume"]
         self.df_hist[numeric_cols] = self.df_hist[numeric_cols].astype(float)
+        print(f"Historical DataFrame shape: {self.df_hist.shape}")
 
         # Trim to latest `max_length`
         self.df_hist = self.df_hist.tail(self.max_length).reset_index(drop=True)
-        print(f"Historical DataFrame initialized with {len(self.df_hist)} rows.")
+        print
 
         # Streamed (live) data goes here
         self.df_stream = pd.DataFrame(columns=self.df_hist.columns)
