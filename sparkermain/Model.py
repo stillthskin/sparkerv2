@@ -31,7 +31,6 @@ class Model:
         self.predictor = None
         self.nModel = None
         self.count = 0
-        self.myprocessor = SocketProce(self.symbol, self.interval)
         self.open_positions = {}
         self.socketProce= SocketProce('BTCUSDT', '15m')
 
