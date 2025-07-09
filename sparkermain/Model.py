@@ -50,7 +50,7 @@ class Model:
                     print(f'count: {self.count}')
                     self.df=self.socketProce.processDf(kline)
                     if len(self.closes) < len(self.df):
-                        self.closes = self.df_hist['Close'].tolist()
+                        self.closes = self.df['Close'].tolist()
                         print(f"Using historical closes (len={len(self.closes)})")
                     print(f"DataFrame length: {len(self.df)}")
                     if self.count>=360:
