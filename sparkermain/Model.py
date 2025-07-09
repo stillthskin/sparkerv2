@@ -48,6 +48,7 @@ class Model:
                     
                     print(f'count: {self.count}')
                     self.df=self.socketProce.processDf(kline)
+                    print(f"DataFrame length: {len(self.df)}")
                     if self.count>=360:
                         print(f'count: {self.count} - Training model')
                         model=NModelII('BTCUSDT')
