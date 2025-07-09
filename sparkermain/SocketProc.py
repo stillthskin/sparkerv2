@@ -11,11 +11,12 @@ class SocketProce:
         self.interval = interval
 
         # ✅ Load historical klines ONCE during initialization
-        klines = self.client.get_historical_klines(
-            self.symbol,
-            self.interval,
-            f"{self.max_length + 10} {self.interval} ago UTC"
-        )
+        klines = self.client.get_klines(
+    symbol=self.symbol,
+    interval=self.interval,
+    limit=self.max_length + 10
+)
+
 
         # ✅ Create DataFrame from historical data
         self.df_hist = pd.DataFrame(
