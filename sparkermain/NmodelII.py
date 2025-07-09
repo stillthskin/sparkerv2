@@ -24,7 +24,7 @@ tf.random.set_seed(SEED)
 
 
 class NModelII:
-    def __init__(self, symbol, interval='1m', lookback='2 day ago UTC'):
+    def __init__(self, symbol, interval='15m', lookback='30 day ago UTC'):
         self.client = Client(API_KEY, API_SECRET)
         self.symbol = symbol
         self.interval = interval

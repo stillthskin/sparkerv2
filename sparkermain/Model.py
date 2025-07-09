@@ -17,7 +17,7 @@ from django.core.cache import cache
 from celery import shared_task
 
 class Model:
-    def __init__(self, symbol, trade_quantity, interval='1m', starting_balance=300, stop_loss_pct=0.002, take_profit_pct=0.005):
+    def __init__(self, symbol, trade_quantity, interval='15m', starting_balance=300, stop_loss_pct=0.002, take_profit_pct=0.005):
         self.symbol = symbol
         self.trade_quantity = f"{float(trade_quantity):.8f}"
         self.interval = interval
@@ -33,7 +33,7 @@ class Model:
         self.count = 0
         self.myprocessor = SocketProce(self.symbol, self.interval)
         self.open_positions = {}
-        self.socketProce= SocketProce('BTCUSDT', '1m')
+        self.socketProce= SocketProce('BTCUSDT', '15m')
 
     def on_message(self, ws, message):
         try:
