@@ -10,16 +10,22 @@ class SocketProce:
         self.symbol = symbol
         self.interval = interval
 
-        # ✅ Load historical klines ONCE during initialization
+        # Load initial historical data
+        self.df_hist = self.fetch_historical_data()
+        print(f"Initial historical DataFrame length: {len(self.df_hist)}")
+
+        # Initialize empty stream DataFrame
+        self.df_stream = pd.DataFrame(columns=self.df_hist.columns)
+
+    def fetch_historical_data(self):
+        """Fetches latest historical candles from Binance"""
         klines = self.client.get_klines(
-    symbol=self.symbol,
-    interval=self.interval,
-    limit=self.max_length + 10
-)
+            symbol=self.symbol,
+            interval=self.interval,
+            limit=self.max_length + 10
+        )
 
-
-        # ✅ Create DataFrame from historical data
-        self.df_hist = pd.DataFrame(
+        df = pd.DataFrame(
             klines,
             columns=[
                 "timestamp", "Open", "High", "Low", "Close", "volume",
@@ -28,22 +34,22 @@ class SocketProce:
             ]
         )
 
-        # ✅ Convert numeric columns
         numeric_cols = [
             "Open", "High", "Low", "Close", "volume", "quote_asset_volume",
             "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume"
         ]
-        self.df_hist[numeric_cols] = self.df_hist[numeric_cols].astype(float)
+        df[numeric_cols] = df[numeric_cols].astype(float)
 
-        # ✅ Keep last `max_length` rows
-        self.df_hist = self.df_hist.tail(self.max_length).reset_index(drop=True)
-        print(f"Historical DataFrame length: {len(self.df_hist)}")
-
-        # ✅ Initialize an empty DataFrame for streaming data
-        self.df_stream = pd.DataFrame(columns=self.df_hist.columns)
+        # Keep only the most recent max_length rows
+        return df.tail(self.max_length).reset_index(drop=True)
 
     def processDf(self, kline):
-        # ✅ Parse incoming kline dictionary to match DataFrame format
+        # Refresh historical data on closed candle
+        if kline.get('x', False):  # 'x' is True only when the kline is closed
+            self.df_hist = self.fetch_historical_data()
+            print(f"Refreshed historical DataFrame length: {len(self.df_hist)}")
+
+        # Process and format new kline
         processed = {
             'timestamp': kline['t'],
             'Open': float(kline['o']),
@@ -59,22 +65,14 @@ class SocketProce:
             'ignore': kline['B']
         }
 
-        # ✅ Wrap new row in a DataFrame
         new_row = pd.DataFrame([processed])
-        new_row = new_row.reindex(columns=self.df_stream.columns)  # To prevent FutureWarning
+        new_row = new_row.reindex(columns=self.df_stream.columns)
 
-        # ✅ Append to stream DataFrame
         self.df_stream = pd.concat([self.df_stream, new_row], ignore_index=True)
 
-        # ✅ Keep only the last `max_length` entries
         if len(self.df_stream) > self.max_length:
             self.df_stream = self.df_stream.iloc[1:]
 
-        # ✅ Debug print
-        print(f"DataFrame length: {len(self.df_stream)}")
+        print(f"Live stream DataFrame length: {len(self.df_stream)}")
 
-        # ✅ Return historical until live data is filled up
-        if len(self.df_stream) < self.max_length:
-            return self.df_hist
-        else:
-            return self.df_stream
+        return self.df_stream if len(self.df_stream) >= self.max_length else self.df_hist
