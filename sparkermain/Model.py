@@ -44,9 +44,14 @@ class Model:
                     close_price = float(kline['c']) 
                     self.closes.append(close_price)
                     print(f"Close price: {close_price}")
+
+              
                     
                     print(f'count: {self.count}')
                     self.df=self.socketProce.processDf(kline)
+                    if len(self.closes) < len(self.df):
+                        self.closes = self.df_hist['Close'].tolist()
+                        print(f"Using historical closes (len={len(self.closes)})")
                     print(f"DataFrame length: {len(self.df)}")
                     if self.count>=360:
                         print(f'count: {self.count} - Training model')
