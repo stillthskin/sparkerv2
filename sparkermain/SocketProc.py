@@ -32,6 +32,7 @@ class SocketProce:
 
         # Trim to latest `max_length`
         self.df_hist = self.df_hist.tail(self.max_length).reset_index(drop=True)
+        print(f"Historical DataFrame initialized with {len(self.df_hist)} rows.")
 
         # Streamed (live) data goes here
         self.df_stream = pd.DataFrame(columns=self.df_hist.columns)
