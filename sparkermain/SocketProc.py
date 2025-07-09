@@ -1,9 +1,7 @@
-
 import pandas as pd
 from .config import *
 from binance.client import Client
 from binance.enums import *
-import pandas as pd
 
 class SocketProce:
     def __init__(self, symbol, interval):
@@ -11,35 +9,35 @@ class SocketProce:
         self.client = Client(API_KEY, API_SECRET)
         self.symbol = symbol
         self.interval = interval
-        
-        # # Load historical data ONCE during initialization
-        # klines = self.client.get_historical_klines(
-        #     self.symbol, 
-        #     self.interval, 
-        #     f"40 {self.interval} ago UTC"
-        # )
-        
-        # Initialize df2 with historical data
-        self.df2 = pd.DataFrame(
+
+        # Load historical klines (just once)
+        klines = self.client.get_historical_klines(
+            self.symbol,
+            self.interval,
+            f"{self.max_length + 10} {self.interval} ago UTC"
+        )
+
+        # Create DataFrame from historical data
+        self.df_hist = pd.DataFrame(
+            klines,
             columns=["timestamp", "Open", "High", "Low", "Close", "volume",
                      "Close_time", "quote_asset_volume", "number_of_trades",
                      "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume", "ignore"]
         )
-        # self.df = pd.DataFrame(
-        #     klines,
-        #     columns=["timestamp", "Open", "High", "Low", "Close", "volume",
-        #              "Close_time", "quote_asset_volume", "number_of_trades",
-        #              "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume", "ignore"]
-        # )
-        
-        # Convert numerical columns to float
+
+        # Convert numeric columns
         numeric_cols = ["Open", "High", "Low", "Close", "volume", "quote_asset_volume",
                         "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume"]
-        self.df2[numeric_cols] = self.df2[numeric_cols].astype(float)
-        # self.df[numeric_cols] = self.df[numeric_cols].astype(float)
+        self.df_hist[numeric_cols] = self.df_hist[numeric_cols].astype(float)
+
+        # Trim to latest `max_length`
+        self.df_hist = self.df_hist.tail(self.max_length).reset_index(drop=True)
+
+        # Streamed (live) data goes here
+        self.df_stream = pd.DataFrame(columns=self.df_hist.columns)
 
     def processDf(self, kline):
-        # Process incoming kline data
+        # Parse incoming kline
         processed = {
             'timestamp': kline['t'],
             'Open': float(kline['o']),
@@ -55,24 +53,17 @@ class SocketProce:
             'ignore': kline['B']
         }
 
-        # Create DataFrame from new kline
         new_row = pd.DataFrame([processed])
 
-        
-        # Append new data using pd.concat
-        self.df2 = pd.concat(
-            [self.df2, new_row],
-            ignore_index=True
-        )
-        # Maintain rolling window of max_length
-        if len(self.df2) > self.max_length:
-            #print('Greater removing Un')
-            self.df2 = self.df2.iloc[1:]  # Remove oldest row
-        if len(self.df2)<self.max_length:
-            toreturn=self.df2
+        # Add to live stream DataFrame
+        self.df_stream = pd.concat([self.df_stream, new_row], ignore_index=True)
 
+        # Maintain size
+        if len(self.df_stream) > self.max_length:
+            self.df_stream = self.df_stream.iloc[1:]
+
+        # Return historical until live stream fills up
+        if len(self.df_stream) < self.max_length:
+            return self.df_hist
         else:
-            toreturn=self.df2
-        # print(f'Shape of DF {self.df2.shape}')
-        return toreturn
-            
+            return self.df_stream
