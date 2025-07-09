@@ -36,6 +36,7 @@ class SocketProce:
 
         # ✅ Keep last `max_length` rows
         self.df_hist = self.df_hist.tail(self.max_length).reset_index(drop=True)
+        print(f"Historical DataFrame length: {len(self.df_hist)}")
 
         # ✅ Initialize an empty DataFrame for streaming data
         self.df_stream = pd.DataFrame(columns=self.df_hist.columns)
