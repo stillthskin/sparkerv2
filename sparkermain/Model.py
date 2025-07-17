@@ -4,8 +4,8 @@ import websocket
 import time
 import logging
 from .Client import Cliente
-#from .NModel import AI_Model
-from .NmodelII import NModelII
+from .NModel import AI_Model
+# from .NmodelII import NModelII
 from .SocketProc import SocketProce
 import numpy as np
 from .config import *
@@ -55,8 +55,12 @@ class Model:
                     print(f"DataFrame length: {len(self.df)}")
                     if self.count>=360:
                         print(f'count: {self.count} - Training model')
-                        model=NModelII('BTCUSDT')
-                        model.train_model()
+                        # model=NModelII('BTCUSDT')
+                        # model.train_model()
+                        # self.count=0
+
+                        self.nModel = AI_Model(self.symbol, self.interval, 30, 10)
+                        self.nModel.train_model()
                         self.count=0
 
 
@@ -82,10 +86,10 @@ class Model:
                     #     self.predictor = NModelII(API_KEY, API_SECRET)
                     #     self.predictor.train_model()
                     
-                    # if self.nModel is None:
-                    #     print('Model is None Training')
-                    #     self.nModel = AI_Model(self.symbol, self.interval, 30, 10)
-                    #     self.nModel.train_model()
+                    if self.nModel is None:
+                        print('Model is None Training')
+                        self.nModel = AI_Model(self.symbol, self.interval, 30, 10)
+                        self.nModel.train_model()
 
                    
 
@@ -111,26 +115,26 @@ class Model:
                         if len(self.df)>40:
                             self.df = self.df.tail(40)
 
-                        try:
-                            model=NModelII('BTCUSDT')
-                            model.load_or_train_model(model_path='model.keras', scaler_path='scaler_close.pkl')
-                            print(f' SOme prdiction: {model.predict_next(self.df)}')
-                            self.predicted_prices= model.predict_next(self.df)
-
-
-
-                        except Exception as e:
-                            print(f"Prediction error: {e}")
-                            return
-                        
                         # try:
-                        #     print(f'len(self.df): {len(self.df)}')
-                        #     self.predicted_prices = self.nModel.prediction(self.df)
-                        #     self.predicted_prices=self.predicted_prices[0]
-                        #     print(f"Predictions: {self.predicted_prices}")
+                        #     model=NModelII('BTCUSDT')
+                        #     model.load_or_train_model(model_path='model.keras', scaler_path='scaler_close.pkl')
+                        #     print(f' SOme prdiction: {model.predict_next(self.df)}')
+                        #     self.predicted_prices= model.predict_next(self.df)
+
+
+
                         # except Exception as e:
                         #     print(f"Prediction error: {e}")
                         #     return
+                        
+                        try:
+                            print(f'len(self.df): {len(self.df)}')
+                            self.predicted_prices = self.nModel.prediction(self.df)
+                            self.predicted_prices=self.predicted_prices[0]
+                            print(f"Predictions: {self.predicted_prices}")
+                        except Exception as e:
+                            print(f"Prediction error: {e}")
+                            return
 
                         # Trading logic
                         consecutive_bullish = sum(self.predicted_prices[i] > self.predicted_prices[i-1] for i in range(1,5)) >= 3
